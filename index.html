@@ -1844,14 +1844,22 @@
                     throw new Error(`Error al cargar la bitácora: ${response.statusText}`);
                 }
                 const data = await response.json();
-                
-                // Aquí actualizas los elementos de tu página con los datos del JSON
                 console.log("Datos cargados correctamente:", data);
 
-                // Si guardaste entradas o imágenes en el JSON, las renderizamos:
+                // 1. Guardamos cada dato del JSON en el localStorage de tu navegador
                 for (const [clave, valor] of Object.entries(data)) {
-                    // Tu lógica existente para mostrar cada módulo o pestaña
+                    localStorage.setItem(clave, typeof valor === 'object' ? JSON.stringify(valor) : valor);
                 }
+
+                // 2. Si tenías una función en tu script previo para pintar la bitácora en pantalla, la ejecutamos
+                if (typeof renderizarBitacora === 'function') {
+                    renderizarBitacora();
+                } else if (typeof cargarEntradas === 'function') {
+                    cargarEntradas();
+                } else if (typeof init === 'function') {
+                    init();
+                }
+
             } catch (error) {
                 console.error("Error al cargar la información:", error);
             }
